@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import server from "../enviroment.js"
 
 import axios from "axios";
 
@@ -12,14 +13,19 @@ const BuyActionWindow = ({ uid }) => {
   const [stockPrice, setStockPrice] = useState(0.0);
 
   const handleBuyClick = () => {
-    axios.post("http://localhost:3002/newOrder", {
+    axios.post(`${server}/newOrder`, {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,
       mode: "BUY",
+    })
+    .then(() => {
+      GeneralContext.closeBuyWindow();
+    })
+    .catch((error) => {
+      console.error('Order failed:', error);
+      alert('Failed to place order. Please try again.');
     });
-
-    GeneralContext.closeBuyWindow();
   };
 
   const handleCancelClick = () => {
